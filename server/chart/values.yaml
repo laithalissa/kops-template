@@ -1,0 +1,46 @@
+# Default values for chart.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 1
+
+image:
+  repository: "laith/python-testserver"
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+ingress:
+  enabled: true
+  annotations:
+    # kubernetes.io/ingress.class: alb
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/enable-modsecurity: "true"
+    nginx.ingrees.kubernetes.io/enable-owasp-modsecurity-crs: "true"
+    nginx.ingress.kubernetes.io/modsecurity-snippet: |
+      SecRuleEngine On
+      SecRequestBodyAccess On
+      SecAuditEngine RelevantOnly
+      SecAuditLogParts ABIJDEFHZ
+      SecAuditLog /var/log/modsec_audit.log
+      SecRule REQUEST_HEADERS:User-Agent \"fern-scanner\" \"log,deny,id:107,status:403,msg:\'Fern Scanner Identified\'\"
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: simpleserver.udpmarkit.com
+      paths:
+        - /
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

@@ -1,0 +1,11 @@
+controller:
+#  serviceAccount: <...>
+  service:
+    internal: true
+#    sslCertificate: <aws acm arn here>
+  watchNamespace: default
+
+data:
+  proxy-buffer-size: "128k"
+  proxy-buffers: "256k"
+  proxy-busy-buffers-size: "256k"
